@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && npm run move",
-    "lint": "vue-cli-service lint",
-    "move": "xcopy .\\dist\\* ..\\express-ec\\public\\ /s /e /y"
+    "build": "vue-cli-service build --watch --dest ..\\express-ec\\public\\",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^2.6.5",
