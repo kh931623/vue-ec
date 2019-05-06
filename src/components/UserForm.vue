@@ -7,18 +7,20 @@
       <v-btn flat color="blue" v-else @click="signUpHandler()">Sign Up</v-btn>
     </v-card-title>
     <v-card-text>
-      <!-- sign up form -->
-      <SignUpForm v-if="isSignUp"></SignUpForm>
+      <v-form v-model="valid" ref="form">
+        <!-- sign up form -->
+        <SignUpForm v-if="isSignUp" v-bind.sync="signUpData"></SignUpForm>
 
-      <!-- sign in form -->
-      <SignInForm v-else v-bind.sync="signInData"></SignInForm>
+        <!-- sign in form -->
+        <SignInForm v-else v-bind.sync="signInData"></SignInForm>
+      </v-form>
       <small>*indicates required field</small>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn color="blue darken-1" flat @click="closeUserForm()">Close</v-btn>
-      <v-btn color="blue darken-1" flat @click="closeUserForm()" v-if="isSignUp">Sign Up</v-btn>
-      <v-btn color="blue darken-1" flat @click="closeUserForm()" v-else>Sign In</v-btn>
+      <v-btn color="blue darken-1" flat @click="signUp()" v-if="isSignUp">Sign Up</v-btn>
+      <v-btn color="blue darken-1" flat @click="signIn()" v-else>Sign In</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -39,7 +41,6 @@ export default {
     data() {
         return {
             signUpData: {
-                valid: false,
                 username: '',
                 password: '',
                 passwordConfirmation: '',
@@ -47,11 +48,11 @@ export default {
                 lastName: ''
             },
             signInData: {
-                valid: false,
                 username: '',
-                password: '',
-            }
-        }
+                password: ''
+            },
+            valid: false,
+        };
     },
     methods: {
         ...mapMutations([
@@ -73,17 +74,32 @@ export default {
             this[MutationTypes.CHANGE_SHOW_USER_FORM]({
                 flag: false
             });
+            this.$refs.form.reset();
+
+            // clear form data
+            const targets = [this.signUpData, this.signInData];
+            targets.forEach(data => {
+                Object.keys(data).forEach(key => {
+                    data[key] = '';
+                })
+            })
+        },
+        signIn() {
+            if (this.$refs.form.validate()) {
+                console.log('sign in!');
+            }
+        },
+        signUp() {
+            if (this.$refs.form.validate()) {
+                console.log('sign up!');
+            }
         }
     },
     computed: {
-         // map state from store
-        ...mapState([
-          'isSignUp'
-        ]),
+        // map state from store
+        ...mapState(['isSignUp']),
 
-        ...mapGetters([
-          'userFormTitle'
-        ])
+        ...mapGetters(['userFormTitle'])
     }
 };
 </script>

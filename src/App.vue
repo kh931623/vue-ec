@@ -50,8 +50,8 @@
         </v-card>
       </v-dialog>
 
-      <!-- sign in/sign up dialog -->
-      <v-dialog :value="showUserForm" @input="closeUserForm()" max-width="600px">
+      <!-- user form dialog -->
+      <v-dialog :value="showUserForm" max-width="600px" persistent>
         <UserForm></UserForm>
       </v-dialog>
     </v-app>

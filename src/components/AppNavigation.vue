@@ -3,7 +3,6 @@
     <v-toolbar-title color="white" class="pointer-cursor">Shopping Time</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn class="pointer-cursor" flat>
-      
       <v-badge color="black">
         <template v-slot:badge>
           <span>{{ shoppingCartLength }}</span>
