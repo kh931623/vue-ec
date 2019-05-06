@@ -1,6 +1,12 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
+
 import MutationTypes from './MutationTypes.js';
 
-export default {
+Vue.config.devtools = process.env.NODE_ENV === 'development'
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
     state: {
         // if shows loading screen
         isLoading: false,
@@ -10,6 +16,8 @@ export default {
 
         // if shows sign-up form in user form
         isSignUp: false,
+
+        shoppingCart: [],
     },
     mutations: {
 
@@ -31,6 +39,9 @@ export default {
     getters: {
         userFormTitle: state => {
             return state.isSignUp ? 'Sign Up' : 'Sign In';
-        }
+        },
+        shoppingCartLength: state => state.shoppingCart.length,
     }
-};
+})
+
+export default store;

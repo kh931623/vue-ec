@@ -5,16 +5,13 @@ import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
 import App from "./App.vue";
-import storeConfig from "./store";
+import store from "./store";
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
 
 Vue.use(VueRouter);
-Vue.use(Vuex);
 Vue.use(Vuetify);
-
-const store = new Vuex.Store(storeConfig);
 
 const app = new Vue({
     render: h => h(App),

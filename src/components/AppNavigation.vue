@@ -3,7 +3,13 @@
     <v-toolbar-title color="white" class="pointer-cursor">Shopping Time</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn class="pointer-cursor" flat>
-      <v-icon>shopping_cart</v-icon>
+      
+      <v-badge color="black">
+        <template v-slot:badge>
+          <span>{{ shoppingCartLength }}</span>
+        </template>
+        <v-icon>shopping_cart</v-icon>
+      </v-badge>
     </v-btn>
     <template>
       <v-btn flat @click="signInHandler()">SIGN IN</v-btn>
@@ -13,12 +19,12 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 import MutationTypes from '../store/MutationTypes.js';
 
 export default {
-    name: "AppNavigation",
+    name: 'AppNavigation',
     date() {
         return {};
     },
@@ -45,6 +51,9 @@ export default {
                 flag: false
             });
         }
+    },
+    computed: {
+        ...mapGetters(['shoppingCartLength'])
     }
 };
 </script>

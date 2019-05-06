@@ -52,35 +52,7 @@
 
       <!-- sign in/sign up dialog -->
       <v-dialog :value="showUserForm" @input="closeUserForm()" max-width="600px">
-        <v-card>
-          <v-card-title>
-            <span class="headline">{{ userFormTitle }}</span>
-            <v-spacer></v-spacer>
-            <v-btn flat color="blue" v-if="isSignUp" @click="signInHandler()">
-              Sign In
-            </v-btn>
-            <v-btn flat color="blue" v-else @click="signUpHandler()">
-              Sign Up
-            </v-btn>
-          </v-card-title>
-          <v-card-text>
-            <SignUpForm v-if="isSignUp"
-            ></SignUpForm>
-            <SignInForm v-else
-            ></SignInForm>
-            <small>*indicates required field</small>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="closeUserForm()">Close</v-btn>
-            <v-btn color="blue darken-1" flat @click="closeUserForm()" v-if="isSignUp">
-              Sign Up
-            </v-btn>
-            <v-btn color="blue darken-1" flat @click="closeUserForm()" v-else>
-              Sign In
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+        <UserForm></UserForm>
       </v-dialog>
     </v-app>
   </div>
@@ -88,8 +60,7 @@
 
 <script>
 import AppNavigation from './components/AppNavigation.vue';
-import SignUpForm from './components/SignUpForm.vue';
-import SignInForm from './components/SignInForm.vue';
+import UserForm from './components/UserForm.vue'
 
 import MutationTypes from './store/MutationTypes.js';
 import { mapMutations, mapState, mapGetters } from 'vuex';
@@ -98,8 +69,7 @@ export default {
     name: 'app',
     components: {
         AppNavigation,
-        SignUpForm,
-        SignInForm
+        UserForm
     },
     data() {
         return {
