@@ -32,6 +32,8 @@ import SignInForm from './SignInForm.vue';
 import { mapMutations, mapGetters, mapState } from 'vuex';
 import MutationTypes from '../store/MutationTypes.js';
 
+import DataModel from '../api/index.js';
+
 export default {
     name: 'Userform',
     components: {
@@ -51,13 +53,15 @@ export default {
                 username: '',
                 password: ''
             },
-            valid: false,
+            valid: false
         };
     },
     methods: {
         ...mapMutations([
             MutationTypes.CHANGE_SHOW_USER_FORM,
-            MutationTypes.CHANGE_IS_SIGN_UP
+            MutationTypes.CHANGE_IS_SIGN_UP,
+            MutationTypes.CHANGE_ALERT_MESSAGE,
+            MutationTypes.SET_USER
         ]),
         signUpHandler() {
             this[MutationTypes.CHANGE_IS_SIGN_UP]({
@@ -81,17 +85,47 @@ export default {
             targets.forEach(data => {
                 Object.keys(data).forEach(key => {
                     data[key] = '';
-                })
-            })
+                });
+            });
         },
-        signIn() {
+        async signIn() {
             if (this.$refs.form.validate()) {
-                console.log('sign in!');
+                try {
+                    const result = await DataModel.Utility.login(this.signInData);
+                    this[MutationTypes.SET_USER]({
+                        user: result.user
+                    });
+                    this.closeUserForm();
+                    this[MutationTypes.CHANGE_ALERT_MESSAGE]({
+                        text: 'Successfully Logged In!'
+                    });
+                } catch (error) {
+                    this[MutationTypes.CHANGE_ALERT_MESSAGE]({
+                        text: error.message
+                    });
+                }
             }
         },
-        signUp() {
+        async signUp() {
             if (this.$refs.form.validate()) {
-                console.log('sign up!');
+                try {
+                    const result = await DataModel.User.createUser(
+                        this.signUpData
+                    );
+                    console.log(result);
+                    this[MutationTypes.SET_USER]({
+                        user: result.user
+                    });
+
+                    this.closeUserForm();
+                    this[MutationTypes.CHANGE_ALERT_MESSAGE]({
+                        text: 'Successfully Registered!'
+                    });
+                } catch (error) {
+                    this[MutationTypes.CHANGE_ALERT_MESSAGE]({
+                        text: error.message
+                    });
+                }
             }
         }
     },

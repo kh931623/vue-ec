@@ -18,6 +18,10 @@ const store = new Vuex.Store({
         isSignUp: false,
 
         shoppingCart: [],
+
+        alertMessage: '',
+
+        user: null,
     },
     mutations: {
 
@@ -31,6 +35,14 @@ const store = new Vuex.Store({
 
         [MutationTypes.CHANGE_IS_SIGN_UP] (state, payload) {
             state.isSignUp = payload.flag;
+        },
+
+        [MutationTypes.CHANGE_ALERT_MESSAGE] (state, payload) {
+            state.alertMessage = payload.text;
+        },
+
+        [MutationTypes.SET_USER] (state, payload) {
+            state.user = payload.user;
         }
     },
     actions: {
@@ -40,7 +52,12 @@ const store = new Vuex.Store({
         userFormTitle: state => {
             return state.isSignUp ? 'Sign Up' : 'Sign In';
         },
+
         shoppingCartLength: state => state.shoppingCart.length,
+        
+        canDisplayAlert: state => Boolean(state.alertMessage),
+
+        isLoggedIn: state => Boolean(state.user),
     }
 })
 

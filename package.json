@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --watch --dest ..\\express-ec\\public\\",
+    "dev": "vue-cli-service build --watch --dest ..\\express-ec\\public\\",
+    "build": "vue-cli-service build --dest ..\\express-ec\\public\\",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
