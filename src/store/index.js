@@ -58,6 +58,13 @@ const store = new Vuex.Store({
         canDisplayAlert: state => Boolean(state.alertMessage),
 
         isLoggedIn: state => Boolean(state.user),
+
+        isAdmin: state => {
+            if (state.user) {
+                return state.user.role === 'admin'
+            }
+            return false;
+        },
     }
 })
 

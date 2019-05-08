@@ -3,45 +3,11 @@
     <v-app>
       <AppNavigation></AppNavigation>
       <v-container grid-list-md>
-        <v-layout row wrap>
-          <!-- test area -->
-          <v-flex xs12>
-            <v-btn @click="loadingHandler()">Loading la!</v-btn>
-          </v-flex>
-
-          <!-- search bar -->
-          <v-flex xs12>
-            <v-form>
-              <v-text-field solo v-model="searchText" label="Search" append-icon="search" clearable></v-text-field>
-            </v-form>
-          </v-flex>
-
-          <!-- left quick menu -->
-          <v-flex xs12 md4>
-            <v-card>
-              <v-card-title primary-title>
-                <div>
-                  <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
-                </div>
-              </v-card-title>
-            </v-card>
-          </v-flex>
-
-          <!-- main content -->
-          <v-flex xs12 md8>
-            <v-card>
-              <v-card-title primary-title>
-                <div>
-                  <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
-                </div>
-              </v-card-title>
-            </v-card>
-          </v-flex>
-        </v-layout>
+        <router-view></router-view>
       </v-container>
 
       <!-- loading dialog -->
-      <v-dialog :value="isLoading" persistent width="600">
+      <v-dialog :value="isLoading" persistent width="400">
         <v-card color="primary" dark>
           <v-card-text>
             Loading ...
@@ -55,6 +21,7 @@
         <UserForm></UserForm>
       </v-dialog>
 
+      <!-- alert box -->
       <v-dialog :value="canDisplayAlert" max-width="400" @input="closeAlert()">
         <v-card>
           <v-card-title class="headline">Message</v-card-title>
@@ -94,12 +61,10 @@ export default {
         };
     },
     async mounted() {
-        // api test
-        // const result = await DataModel.User.createUser({});
-        // console.log(result);
-        // this[MutationTypes.CHANGE_ALERT_MESSAGE]({
-        //     text: 'hell yeah!'
-        // });
+       const result = await DataModel.Utility.fetchUserInfo();
+       this[MutationTypes.SET_USER]({
+           user: result.user
+       });
     },
     methods: {
         // map mutations from store
@@ -107,19 +72,10 @@ export default {
             MutationTypes.CHANGE_IS_LOADING,
             MutationTypes.CHANGE_SHOW_USER_FORM,
             MutationTypes.CHANGE_IS_SIGN_UP,
-            MutationTypes.CHANGE_ALERT_MESSAGE
+            MutationTypes.CHANGE_ALERT_MESSAGE,
+            MutationTypes.SET_USER
         ]),
-        loadingHandler() {
-            this[MutationTypes.CHANGE_IS_LOADING]({
-                flag: true
-            });
-
-            setTimeout(() => {
-                this[MutationTypes.CHANGE_IS_LOADING]({
-                    flag: false
-                });
-            }, 3 * 1000);
-        },
+        
         closeAlert() {
           this[MutationTypes.CHANGE_ALERT_MESSAGE]({
             text: ''

@@ -6,6 +6,7 @@ import "vuetify/dist/vuetify.min.css";
 
 import App from "./App.vue";
 import store from "./store";
+import router from './router/index.js';
 
 Vue.config.productionTip = false;
 Vue.config.devtools = true;
@@ -15,7 +16,8 @@ Vue.use(Vuetify);
 
 const app = new Vue({
     render: h => h(App),
-    store
+    store,
+    router
 }).$mount("#app");
 
 window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue = app.constructor;

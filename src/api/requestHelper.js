@@ -15,12 +15,17 @@ export default async function requestHelper(url, method = 'get', data = null, co
     if (!url) {
         throw new Error('url should be provided!');
     }
+
+    let requestUrl = url;
     if (method === 'get' && data) {
-        throw new Error('get method should use with query string instead of data!');
+        const queryString = Object.keys(data).reduce((prev, key) => {
+            return `${prev}${key}=${data[key]}&`;
+        }, '');
+        requestUrl = `${url}?${queryString}`;
     }
 
     const response = await axiosInstance({
-        url,
+        url: requestUrl,
         method,
         data,
         ...configs

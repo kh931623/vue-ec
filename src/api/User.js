@@ -4,8 +4,8 @@ const END_POINT = '/user';
 const END_POINT_WITH_ID = `${END_POINT}/:id`;
 
 export default {
-    async fetchUserList() {
-        return requestHelper(END_POINT);
+    async fetchUserList(condition) {
+        return requestHelper(END_POINT, 'get', condition);
     },
 
     async createUser(userData) {

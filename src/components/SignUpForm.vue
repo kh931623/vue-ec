@@ -2,32 +2,33 @@
   <v-container grid-list-md>
     <v-layout wrap>
       <v-flex xs12>
-        <v-text-field 
-            label="User Name*" 
-            :value="username"
-            @input="$emit('update:username', $event)"
-            :rules="usernameRules"
-            required
+        <v-text-field
+          label="User Name*"
+          :value="username"
+          @input="$emit('update:username', $event);checkUserExistence($event)"
+          :rules="usernameRules"
+          :error-messages="usernameErrorMessage"
+          required
         ></v-text-field>
       </v-flex>
       <v-flex xs12>
-        <v-text-field 
-            label="Password*" 
-            type="password" 
-            :value="password"
-            @input="$emit('update:password', $event)"
-            :rules="passwordRules"
-            required
+        <v-text-field
+          label="Password*"
+          type="password"
+          :value="password"
+          @input="$emit('update:password', $event)"
+          :rules="passwordRules"
+          required
         ></v-text-field>
       </v-flex>
       <v-flex xs12>
-        <v-text-field 
-            label="Password Confirmation*" 
-            type="password" 
-            :value="passwordConfirmation"
-            @input="$emit('update:passwordConfirmation', $event)"
-            :rules="passwordConfirmationRules"
-            required
+        <v-text-field
+          label="Password Confirmation*"
+          type="password"
+          :value="passwordConfirmation"
+          @input="$emit('update:passwordConfirmation', $event)"
+          :rules="passwordConfirmationRules"
+          required
         ></v-text-field>
       </v-flex>
       <v-flex xs12 sm6>
@@ -53,7 +54,12 @@
 </template>
 
 <script>
+import _ from 'lodash';
 import createRequiredText from '../helpers/createRequiredText.js';
+import DataModel from '../api/index.js';
+
+import MutationTypes from '../store/MutationTypes.js';
+import { mapMutations } from 'vuex';
 
 export default {
     name: 'SignUpForm',
@@ -81,7 +87,29 @@ export default {
             lastNameRules: [
                 v => !!v || createRequiredText('Last Name')
             ],
-        }
+            usernameErrorMessage: ''
+        };
+    },
+    methods: {
+        ...mapMutations([MutationTypes.CHANGE_ALERT_MESSAGE]),
+        checkUserExistence: _.debounce(async function(username) {
+            try {
+                const result = await DataModel.User.fetchUserList({
+                    username
+                });
+
+                if (result.users.length) {
+                    this.usernameErrorMessage = 'User Name exsited!';
+                }
+                else {
+                    this.usernameErrorMessage = '';
+                }
+            } catch (error) {
+                this[MutationTypes.CHANGE_ALERT_MESSAGE]({
+                    text: error.message
+                });
+            }
+        }, 500)
     }
 };
 </script>
