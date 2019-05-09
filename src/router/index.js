@@ -42,12 +42,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    DataModel.Utility.fetchUserInfo()
-        .then(res => {
-            store.commit(MutationTypes.SET_USER, {
-                user: res.user
-            })
-        });
+    // DataModel.Utility.fetchUserInfo()
+    //     .then(res => {
+    //         store.commit(MutationTypes.SET_USER, {
+    //             user: res.user
+    //         })
+    //     });
+    store.dispatch('updateUser');
     next();
 });
 

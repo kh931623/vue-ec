@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import MutationTypes from './MutationTypes.js';
+import DataModel from '../api/index.js';
 
 Vue.config.devtools = process.env.NODE_ENV === 'development'
 Vue.use(Vuex);
@@ -46,7 +47,12 @@ const store = new Vuex.Store({
         }
     },
     actions: {
-
+        async updateUser({ commit }) {
+            const result = await DataModel.Utility.fetchUserInfo();
+            commit(MutationTypes.SET_USER, {
+                user: result.user
+            });
+        }
     },
     getters: {
         userFormTitle: state => {

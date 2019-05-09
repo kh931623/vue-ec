@@ -127,7 +127,7 @@ export default {
                     });
                 }
             }
-        }
+        },
     },
     computed: {
         // map state from store

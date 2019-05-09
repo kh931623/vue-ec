@@ -61,10 +61,10 @@ export default {
         };
     },
     async mounted() {
-       const result = await DataModel.Utility.fetchUserInfo();
-       this[MutationTypes.SET_USER]({
-           user: result.user
-       });
+      //  const result = await DataModel.Utility.fetchUserInfo();
+      //  this[MutationTypes.SET_USER]({
+      //      user: result.user
+      //  });
     },
     methods: {
         // map mutations from store

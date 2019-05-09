@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout row wrap mb-2>
-      <v-flex xs6 md3 mr-2 v-for="(link, index) in links" :key="index">
+      <v-flex xs6 md3 mr-0 v-for="(link, index) in links" :key="index">
         <v-btn color="info" @click="buttonClickHandler(link)">
             {{ link.display }}
         </v-btn>
