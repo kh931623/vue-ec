@@ -23,10 +23,16 @@ const router = new VueRouter({
         {
             path: URL.ORDERS,
             component: OrderPage,
+            meta: {
+                requiredLoggedIn: true
+            }
         },
         {
             path: URL.CONTROLL_PANEL,
             component: ControllPanel,
+            meta: {
+                requiredLoggedIn: true
+            },
             children: [
                 {
                     path: URL.CATEGORY_MANEGEMENT,
@@ -42,14 +48,31 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    // DataModel.Utility.fetchUserInfo()
-    //     .then(res => {
-    //         store.commit(MutationTypes.SET_USER, {
-    //             user: res.user
-    //         })
-    //     });
+    console.log(to, from);
+    
     store.dispatch('updateUser');
-    next();
+
+    // if the some of the matched route can only be accessed by logged in user
+    if (to.matched.some(record => record.meta.requiredLoggedIn)) {
+        // fetch user info. from server
+        DataModel.Utility.fetchUserInfo()
+            .then(res => {
+                // there is user info on server
+                if (res.user) {
+                    next();
+                }
+
+                // no user info. from server
+                else {
+                    next({
+                        path: URL.HOME
+                    });
+                }
+            })
+    }
+    else {
+        next();
+    }
 });
 
 export default router;

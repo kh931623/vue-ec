@@ -15,7 +15,7 @@ export default {
         return requestHelper(`${END_POINT}/${id}`, 'delete');
     },
 
-    async updateCategory(category) {
-        return requestHelper(`${END_POINT}/${category._id}`, 'put', category);
+    async updateCategory(categoryData) {
+        return requestHelper(`${END_POINT}/${categoryData._id}`, 'put', categoryData);
     }
 }
