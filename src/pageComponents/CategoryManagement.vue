@@ -86,7 +86,7 @@
 <script>
 import DataModel from '../api/index.js';
 
-import { mapMutations } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 import MutationTypes from '../store/MutationTypes.js';
 
 export default {
@@ -132,6 +132,9 @@ export default {
         ...mapMutations([
             MutationTypes.CHANGE_ALERT_MESSAGE
         ]),
+        ...mapActions([
+            'triggerConfirm'
+        ]),
         async fetchCategory() {
             const result = await DataModel.Category.fetchCategoryList();
             this.categories = result.categories;
@@ -172,6 +175,11 @@ export default {
             this.categoryData = Object.assign({}, category);
         },
         async deleteButtonClickHandler(category) {
+            const confirm = await this.triggerConfirm('Are you sure you want to delete this category?');
+            if (!confirm) {
+                return;
+            }
+
             try {
                 const result = await DataModel.Category.deleteCategory(category._id);
 

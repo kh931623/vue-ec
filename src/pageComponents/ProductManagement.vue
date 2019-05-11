@@ -120,7 +120,7 @@
 <script>
 import DataModel from '../api/index.js';
 
-import { mapMutations } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 import MutationTypes from '../store/MutationTypes.js';
 
 export default {
@@ -160,6 +160,11 @@ export default {
                     text: 'Stock',
                     value: 'stock',
                     align: 'center'
+                },
+                {
+                    text: 'Actions',
+                    value: 'action',
+                    align: 'center'
                 }
             ],
             nameRules: [
@@ -195,6 +200,9 @@ export default {
     methods: {
         ...mapMutations([
             MutationTypes.CHANGE_ALERT_MESSAGE
+        ]),
+        ...mapActions([
+            'triggerConfirm'
         ]),
         async fetchProducts() {
             try {
@@ -236,6 +244,11 @@ export default {
             }
         },
         async deleteButtonClickHandler(product) {
+            const confirm = await this.triggerConfirm('Are You sure you want to delete this product?');
+            if (!confirm) {
+                return;
+            }
+
             try {
                 await DataModel.Product.deleteProduct(product._id);
                 this[MutationTypes.CHANGE_ALERT_MESSAGE]({

@@ -37,6 +37,24 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <!-- confirm dialog -->
+      <v-dialog :value="canDisplayConfirm" max-width="400" persistent>
+        <v-card>
+          <v-card-title class="headline">Confirm</v-card-title>
+
+          <v-card-text>
+            {{ confirmMessage }}
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn color="error darken-1" @click="cancel()">Cancel</v-btn>
+            <v-btn color="info darken-1" @click="confirm()">Confirm</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>      
     </v-app>
   </div>
 </template>
@@ -80,13 +98,34 @@ export default {
           this[MutationTypes.CHANGE_ALERT_MESSAGE]({
             text: ''
           });
+        },
+
+        confirm() {
+            this['confirmHandler']();
+        },
+
+        cancel() {
+            this['cancelHandler']();
         }
+
     },
     computed: {
         // map state from store
-        ...mapState(['isLoading', 'showUserForm', 'isSignUp', 'alertMessage']),
+        ...mapState([
+          'isLoading', 
+          'showUserForm', 
+          'isSignUp', 
+          'alertMessage', 
+          'confirmMessage',
+          'confirmHandler',
+          'cancelHandler'
+        ]),
 
-        ...mapGetters(['userFormTitle', 'canDisplayAlert'])
+        ...mapGetters([
+          'userFormTitle', 
+          'canDisplayAlert', 
+          'canDisplayConfirm'
+        ])
     }
 };
 </script>

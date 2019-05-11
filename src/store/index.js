@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import MutationTypes from './MutationTypes.js';
 import DataModel from '../api/index.js';
+import { resolve } from 'path';
 
 Vue.config.devtools = process.env.NODE_ENV === 'development'
 Vue.use(Vuex);
@@ -21,6 +22,10 @@ const store = new Vuex.Store({
         shoppingCart: [],
 
         alertMessage: '',
+
+        confirmMessage: '',
+        confirmHandler: () => {},
+        cancelHandler: () => {},
 
         user: null,
     },
@@ -44,6 +49,18 @@ const store = new Vuex.Store({
 
         [MutationTypes.SET_USER] (state, payload) {
             state.user = payload.user;
+        },
+
+        [MutationTypes.CHANGE_CONFIRM_MESSAGE] (state, payload) {
+            state.confirmMessage = payload.text;
+        },
+
+        [MutationTypes.SET_CONFIRM_HANDLER] (state, func) {
+            state.confirmHandler = func;
+        },
+
+        [MutationTypes.SET_CANCEL_HANDLER] (state, func) {
+            state.cancelHandler = func;
         }
     },
     actions: {
@@ -52,6 +69,20 @@ const store = new Vuex.Store({
             commit(MutationTypes.SET_USER, {
                 user: result.user
             });
+        },
+        async triggerConfirm({ commit }, confirmMessage) {
+            commit(MutationTypes.CHANGE_CONFIRM_MESSAGE, {
+                text: confirmMessage
+            });
+            const result = await new Promise((resolve, reject) => {
+                commit(MutationTypes.SET_CONFIRM_HANDLER, () => resolve(true));
+                commit(MutationTypes.SET_CANCEL_HANDLER, () => resolve(false));
+            });
+            commit(MutationTypes.CHANGE_CONFIRM_MESSAGE, {
+                text: ''
+            });
+
+            return result;
         }
     },
     getters: {
@@ -62,6 +93,8 @@ const store = new Vuex.Store({
         shoppingCartLength: state => state.shoppingCart.length,
         
         canDisplayAlert: state => Boolean(state.alertMessage),
+
+        canDisplayConfirm: state => Boolean(state.confirmMessage),
 
         isLoggedIn: state => Boolean(state.user),
 
