@@ -74,7 +74,6 @@ export default {
             });
         },
         closeUserForm() {
-            console.log(123);
             this[MutationTypes.CHANGE_SHOW_USER_FORM]({
                 flag: false
             });
@@ -112,7 +111,6 @@ export default {
                     const result = await DataModel.User.createUser(
                         this.signUpData
                     );
-                    console.log(result);
                     this[MutationTypes.SET_USER]({
                         user: result.user
                     });

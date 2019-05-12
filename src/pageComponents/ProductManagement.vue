@@ -149,7 +149,6 @@ export default {
                     text: 'Category',
                     value: 'category',
                     align: 'center',
-                    sortable: false
                 },
                 {
                     text: 'Price',
@@ -228,9 +227,9 @@ export default {
             this.canShowDialog = true;
         },
         closeProductForm() {
+            this.$refs.productForm.reset();
             this.canShowDialog = false;
             this.isCreateMode = true;
-            this.$refs.productForm.reset();
         },
         editButtonClickHandler(product) {
             try {
@@ -271,11 +270,11 @@ export default {
                         await DataModel.Product.updateProduct(this.productData);
                     }
 
-                    this.fetchProducts();
-                    this.closeProductForm();
                     this[MutationTypes.CHANGE_ALERT_MESSAGE]({
                         text: this.successText
                     });
+                    this.fetchProducts();
+                    this.closeProductForm();
                 } catch (error) {
                     this[MutationTypes.CHANGE_ALERT_MESSAGE]({
                         text: error.message
@@ -303,7 +302,7 @@ export default {
             });
         },
         successText() {
-            const actionPhrase =  this.isCreateMode ? 'created' : 'updated';
+            const actionPhrase = this.isCreateMode ? 'created' : 'updated';
             return `Successfully ${actionPhrase} product`;
         }
     }

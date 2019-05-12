@@ -89,6 +89,13 @@ import DataModel from '../api/index.js';
 import { mapMutations, mapActions } from 'vuex';
 import MutationTypes from '../store/MutationTypes.js';
 
+class Category {
+    constructor(name = '', description = '') {
+        this.name = name;
+        this.description = description;
+    }
+}
+
 export default {
     name: 'CategoryManagement',
     data() {
@@ -146,6 +153,7 @@ export default {
             this.canShowDialog = false;
             this.isCreateMode = true;
             this.$refs.categoryForm.reset();
+            this.categoryData = new Category();
         },
         async actionButtonClickHandler() {
             if (this.$refs.categoryForm.validate()) {
@@ -181,8 +189,7 @@ export default {
             }
 
             try {
-                const result = await DataModel.Category.deleteCategory(category._id);
-
+                await DataModel.Category.deleteCategory(category._id);
                 this[MutationTypes.CHANGE_ALERT_MESSAGE]({
                     text: 'Successfully deleted a category'
                 });

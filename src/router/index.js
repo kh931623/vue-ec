@@ -7,6 +7,7 @@ import OrderPage from '../pageComponents/OrderPage.vue';
 import ControllPanel from '../pageComponents/ControllPanel.vue';
 import CategoryManagement from '../pageComponents/CategoryManagement.vue';
 import ProductManagement from '../pageComponents/ProductManagement.vue';
+import BrowsingProduct from '../pageComponents/BrowsingProduct.vue';
 
 import store from '../store/index.js';
 import MutationTypes from '../store/MutationTypes.js';
@@ -44,12 +45,20 @@ const router = new VueRouter({
                 },
             ],
         },
+        {
+            path: URL.BROWSING_PRODUCT,
+            name: 'browsing-product',
+            component: BrowsingProduct
+        },
+        {
+            path: `${URL.BROWSING_PRODUCT}/:category_id`,
+            name: 'browsing-product-with-category',
+            component: BrowsingProduct
+        }
     ],
 });
 
 router.beforeEach((to, from, next) => {
-    console.log(to, from);
-    
     store.dispatch('updateUser');
 
     // if the some of the matched route can only be accessed by logged in user

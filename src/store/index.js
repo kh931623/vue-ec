@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 
 import MutationTypes from './MutationTypes.js';
 import DataModel from '../api/index.js';
-import { resolve } from 'path';
 
 Vue.config.devtools = process.env.NODE_ENV === 'development'
 Vue.use(Vuex);
@@ -74,7 +73,7 @@ const store = new Vuex.Store({
             commit(MutationTypes.CHANGE_CONFIRM_MESSAGE, {
                 text: confirmMessage
             });
-            const result = await new Promise((resolve, reject) => {
+            const result = await new Promise((resolve) => {
                 commit(MutationTypes.SET_CONFIRM_HANDLER, () => resolve(true));
                 commit(MutationTypes.SET_CANCEL_HANDLER, () => resolve(false));
             });

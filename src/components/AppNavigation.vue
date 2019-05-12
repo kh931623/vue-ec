@@ -81,7 +81,6 @@ export default {
             });
         },
         async menuClickHandler(item) {
-            console.log(item);
             if (item.isLogout) {
                 try {
                     const result = await DataModel.Utility.logout();

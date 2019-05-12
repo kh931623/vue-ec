@@ -3,8 +3,8 @@ import requestHelper from './requestHelper.js';
 const END_POINT = '/product';
 
 export default {
-    async fetchProductList() {
-        return requestHelper(END_POINT);
+    async fetchProductList(conditions) {
+        return requestHelper(END_POINT, 'get', conditions);
     },
 
     async createProduct(productData) {
