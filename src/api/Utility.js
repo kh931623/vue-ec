@@ -11,5 +11,11 @@ export default {
     },
     async logout() {
         return requestHelper(`${END_POINT}/logout`);
+    },
+    async updateShoppingCart(shoppingCart) {
+        return requestHelper(`${END_POINT}/update-shopping-cart`, 'post', shoppingCart)
+    },
+    async fetchShoppingCart() {
+        return requestHelper(`${END_POINT}/fetch-shopping-cart`);
     }
 }

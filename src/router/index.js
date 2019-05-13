@@ -8,9 +8,9 @@ import ControllPanel from '../pageComponents/ControllPanel.vue';
 import CategoryManagement from '../pageComponents/CategoryManagement.vue';
 import ProductManagement from '../pageComponents/ProductManagement.vue';
 import BrowsingProduct from '../pageComponents/BrowsingProduct.vue';
+import ShoppingCart from '../pageComponents/ShoppingCart.vue'
 
 import store from '../store/index.js';
-import MutationTypes from '../store/MutationTypes.js';
 import DataModel from '../api/index.js';
 
 Vue.use(VueRouter);
@@ -25,14 +25,14 @@ const router = new VueRouter({
             path: URL.ORDERS,
             component: OrderPage,
             meta: {
-                requiredLoggedIn: true
-            }
+                requiredLoggedIn: true,
+            },
         },
         {
             path: URL.CONTROLL_PANEL,
             component: ControllPanel,
             meta: {
-                requiredLoggedIn: true
+                requiredLoggedIn: true,
             },
             children: [
                 {
@@ -48,20 +48,25 @@ const router = new VueRouter({
         {
             path: URL.BROWSING_PRODUCT,
             name: 'browsing-product',
-            component: BrowsingProduct
+            component: BrowsingProduct,
         },
         {
             path: `${URL.BROWSING_PRODUCT}/:category_id`,
             name: 'browsing-product-with-category',
-            component: BrowsingProduct
-        }
+            component: BrowsingProduct,
+        },
+        {
+            path: URL.SHOPPING_CART,
+            component: ShoppingCart,
+        },
     ],
 });
 
 router.beforeEach((to, from, next) => {
     store.dispatch('updateUser');
+    store.dispatch('fetchShoppingCart');
 
-    // if the some of the matched route can only be accessed by logged in user
+    // if the some of the matched routes can only be accessed by logged in users
     if (to.matched.some(record => record.meta.requiredLoggedIn)) {
         // fetch user info. from server
         DataModel.Utility.fetchUserInfo()

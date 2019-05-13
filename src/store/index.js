@@ -60,6 +60,10 @@ const store = new Vuex.Store({
 
         [MutationTypes.SET_CANCEL_HANDLER] (state, func) {
             state.cancelHandler = func;
+        },
+
+        [MutationTypes.SET_SHOPPING_CART] (state, newShoppingCart) {
+            state.shoppingCart = newShoppingCart;
         }
     },
     actions: {
@@ -68,6 +72,10 @@ const store = new Vuex.Store({
             commit(MutationTypes.SET_USER, {
                 user: result.user
             });
+        },
+        async fetchShoppingCart({ commit }) {
+            const result = await DataModel.Utility.fetchShoppingCart();
+            commit(MutationTypes.SET_SHOPPING_CART, result.shoppingCart || []);
         },
         async triggerConfirm({ commit }, confirmMessage) {
             commit(MutationTypes.CHANGE_CONFIRM_MESSAGE, {
@@ -82,11 +90,38 @@ const store = new Vuex.Store({
             });
 
             return result;
+        },
+        async addToCart({ state, commit, getters }, product) {
+            const shoppingCart = state.shoppingCart.slice();
+            if (!getters.shoppingCartObject[product._id]) {
+                shoppingCart.push(product);
+            }
+            else {
+                const targetProduct = getters.shoppingCartObject[product._id];
+                targetProduct.quantity += product.quantity;
+                targetProduct.quantity = targetProduct.quantity > product.stock ? product.stock : targetProduct.quantity;
+            }
+            commit(MutationTypes.SET_SHOPPING_CART, shoppingCart);
+
+            try {
+                await DataModel.Utility.updateShoppingCart(shoppingCart);
+            } catch (error) {
+                commit(MutationTypes.CHANGE_ALERT_MESSAGE, {
+                    text: error.message
+                });
+            }
         }
     },
     getters: {
         userFormTitle: state => {
             return state.isSignUp ? 'Sign Up' : 'Sign In';
+        },
+
+        shoppingCartObject(state) {
+            return state.shoppingCart.reduce((prev, item) => {
+                prev[item._id] = item;
+                return prev;
+            }, {});
         },
 
         shoppingCartLength: state => state.shoppingCart.length,

@@ -7,7 +7,7 @@
             </v-form>
         </v-flex>
 
-        <v-flex xs12 md4>
+        <v-flex xs12 md2>
             <v-navigation-drawer permanent>
                 <v-list>
                     <v-list-tile
@@ -23,31 +23,56 @@
             </v-navigation-drawer>
         </v-flex>
 
-        <v-flex xs12 md8>
-            <v-data-table
-                :headers="headers"
-                :items="products"
-                class="elevation-1"
-            >
-                <template v-slot:items="props">
-                    <td class="text-xs-center">{{ props.item.name }}</td>
-                    <td class="text-xs-center">{{ props.item.description }}</td>
-                    <td class="text-xs-center">{{ props.item.category.name }}</td>
-                    <td class="text-xs-center">{{ props.item.price }}</td>
-                    <td class="text-xs-center">{{ props.item.stock }}</td>
-                    <td class="text-xs-right">
-                        <v-btn color="gray" @click="">
-                            Add to Cart
-                        </v-btn>
-                    </td>
-                </template>
-            </v-data-table>            
+        <v-flex xs12 md10>
+            <v-container>
+                <v-layout row wrap>
+                    <v-flex xs12 md4 v-for="product in products" :key="product._id">
+                        <v-card>
+                            <v-card-title class="headline">
+                                {{ product.name }}
+                            </v-card-title>
+
+                            <v-card-text class="h100">
+                                <div>
+                                    {{ product.description }}
+                                </div>
+                            </v-card-text>
+
+                            <v-card-actions>
+                                <span>
+                                    ${{product.price}}
+                                </span>
+                                <v-spacer></v-spacer>
+                                <template>
+                                    <v-icon class="pointer-cursor" @click="decreaseQuantity(product)">
+                                        remove
+                                    </v-icon>
+                                    <span class="stock-input">
+                                        {{ product.quantity }}
+                                    </span>
+                                    <v-icon class="pointer-cursor" @click="increaseQuantity(product)">
+                                        add
+                                    </v-icon>
+                                </template>
+                                <small class="ml-3">
+                                    {{ product.stock }} remaining
+                                </small>
+                                <v-btn flat @click="addToCart(product)">
+                                    <v-icon>
+                                        add_shopping_cart
+                                    </v-icon>
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
         </v-flex>
     </v-layout>
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 import MutationTypes from '../store/MutationTypes.js';
 import DataModel from '../api/index.js';
 import URL from '../router/URL.js';
@@ -108,6 +133,9 @@ export default {
         ...mapMutations([
             MutationTypes.CHANGE_ALERT_MESSAGE
         ]),
+        ...mapActions([
+            'addToCart'
+        ]),
         async fetchCategories() {
             try {
                 const result = await DataModel.Category.fetchCategoryList();
@@ -126,7 +154,7 @@ export default {
                 }
 
                 const result = await DataModel.Product.fetchProductList(conditions);
-                this.products = result.products;
+                this.products = this.addQuantityToArrayObject(result.products);
             } catch (error) {
                 console.error(error);
                 this[MutationTypes.CHANGE_ALERT_MESSAGE]({
@@ -137,10 +165,48 @@ export default {
         goToCategory(category) {
             this.$router.push(`${URL.BROWSING_PRODUCT}/${category._id}`);
         },
-        addToCart() {
-
+        addQuantityToArrayObject(objects) {
+            return objects.map(obj => {
+                const newObject = Object.assign({}, obj);
+                newObject.quantity = 1;
+                return newObject;
+            });
+        },
+        increaseQuantity(product) {
+            if (product.quantity < product.stock) {
+                product.quantity++;
+            }
+        },
+        decreaseQuantity(product) {
+            if (product.quantity > 1) {
+                product.quantity--;
+            }
         }
+    },
+    computed: {
     }
 }
 </script>
+
+<style scoped>
+    .h100 {
+        height: 100px;
+    }
+
+    .icon-button {
+        height: 25px;
+        width: 25px;
+    }
+
+    .stock-input {
+        height: 25px;
+        width: 40px;
+        text-align: center;
+        border-bottom: 1px solid black;
+    }
+
+    .pointer-cursor {
+        cursor: pointer;
+    }
+</style>
 

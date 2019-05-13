@@ -2,7 +2,7 @@
   <v-toolbar color="blue" dark pa-3>
     <v-toolbar-title color="white" class="pointer-cursor" @click="backToHome()">Shopping Time</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn class="pointer-cursor" flat>
+    <v-btn class="pointer-cursor" flat @click="goToShoppingCart()">
       <v-badge color="black">
         <template v-slot:badge v-if="shoppingCartLength">
           <span>{{ shoppingCartLength }}</span>
@@ -103,11 +103,20 @@ export default {
         },
         backToHome() {
             this.$router.push(URL.HOME);
+        },
+        goToShoppingCart() {
+            this.$router.push(URL.SHOPPING_CART);
         }
     },
     computed: {
-        ...mapState(['user']),
-        ...mapGetters(['shoppingCartLength', 'isLoggedIn', 'isAdmin']),
+        ...mapState([
+            'user',
+        ]),
+        ...mapGetters([
+            'shoppingCartLength', 
+            'isLoggedIn', 
+            'isAdmin'
+        ]),
         appendedMenu() {
             if (this.isAdmin) {
                 return [
