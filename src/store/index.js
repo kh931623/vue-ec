@@ -29,48 +29,47 @@ const store = new Vuex.Store({
         user: null,
     },
     mutations: {
-
-        [MutationTypes.CHANGE_IS_LOADING] (state, payload) {
+        [MutationTypes.CHANGE_IS_LOADING](state, payload) {
             state.isLoading = payload.flag;
         },
 
-        [MutationTypes.CHANGE_SHOW_USER_FORM] (state, payload) {
+        [MutationTypes.CHANGE_SHOW_USER_FORM](state, payload) {
             state.showUserForm = payload.flag;
         },
 
-        [MutationTypes.CHANGE_IS_SIGN_UP] (state, payload) {
+        [MutationTypes.CHANGE_IS_SIGN_UP](state, payload) {
             state.isSignUp = payload.flag;
         },
 
-        [MutationTypes.CHANGE_ALERT_MESSAGE] (state, payload) {
+        [MutationTypes.CHANGE_ALERT_MESSAGE](state, payload) {
             state.alertMessage = payload.text;
         },
 
-        [MutationTypes.SET_USER] (state, payload) {
+        [MutationTypes.SET_USER](state, payload) {
             state.user = payload.user;
         },
 
-        [MutationTypes.CHANGE_CONFIRM_MESSAGE] (state, payload) {
+        [MutationTypes.CHANGE_CONFIRM_MESSAGE](state, payload) {
             state.confirmMessage = payload.text;
         },
 
-        [MutationTypes.SET_CONFIRM_HANDLER] (state, func) {
+        [MutationTypes.SET_CONFIRM_HANDLER](state, func) {
             state.confirmHandler = func;
         },
 
-        [MutationTypes.SET_CANCEL_HANDLER] (state, func) {
+        [MutationTypes.SET_CANCEL_HANDLER](state, func) {
             state.cancelHandler = func;
         },
 
-        [MutationTypes.SET_SHOPPING_CART] (state, newShoppingCart) {
+        [MutationTypes.SET_SHOPPING_CART](state, newShoppingCart) {
             state.shoppingCart = newShoppingCart;
-        }
+        },
     },
     actions: {
         async updateUser({ commit }) {
             const result = await DataModel.Utility.fetchUserInfo();
             commit(MutationTypes.SET_USER, {
-                user: result.user
+                user: result.user,
             });
         },
         async fetchShoppingCart({ commit }) {
@@ -79,14 +78,14 @@ const store = new Vuex.Store({
         },
         async triggerConfirm({ commit }, confirmMessage) {
             commit(MutationTypes.CHANGE_CONFIRM_MESSAGE, {
-                text: confirmMessage
+                text: confirmMessage,
             });
-            const result = await new Promise((resolve) => {
+            const result = await new Promise(resolve => {
                 commit(MutationTypes.SET_CONFIRM_HANDLER, () => resolve(true));
                 commit(MutationTypes.SET_CANCEL_HANDLER, () => resolve(false));
             });
             commit(MutationTypes.CHANGE_CONFIRM_MESSAGE, {
-                text: ''
+                text: '',
             });
 
             return result;
@@ -95,11 +94,13 @@ const store = new Vuex.Store({
             const shoppingCart = state.shoppingCart.slice();
             if (!getters.shoppingCartObject[product._id]) {
                 shoppingCart.push(product);
-            }
-            else {
+            } else {
                 const targetProduct = getters.shoppingCartObject[product._id];
                 targetProduct.quantity += product.quantity;
-                targetProduct.quantity = targetProduct.quantity > product.stock ? product.stock : targetProduct.quantity;
+                targetProduct.quantity =
+                    targetProduct.quantity > product.stock
+                        ? product.stock
+                        : targetProduct.quantity;
             }
             commit(MutationTypes.SET_SHOPPING_CART, shoppingCart);
 
@@ -107,10 +108,61 @@ const store = new Vuex.Store({
                 await DataModel.Utility.updateShoppingCart(shoppingCart);
             } catch (error) {
                 commit(MutationTypes.CHANGE_ALERT_MESSAGE, {
-                    text: error.message
+                    text: error.message,
                 });
             }
-        }
+        },
+        async deleteFromCart({ commit, state }, index) {
+            const cart = state.shoppingCart.slice();
+            cart.splice(index, 1);
+
+            try {
+                await DataModel.Utility.updateShoppingCart(cart);
+                commit(MutationTypes.SET_SHOPPING_CART, cart);
+            } catch (error) {
+                commit(MutationTypes.CHANGE_ALERT_MESSAGE, {
+                    text: error.message,
+                });
+            }
+        },
+        async increaseQuantity({ commit, state }, index) {
+            const cart = state.shoppingCart.slice();
+            const product = cart[index];
+
+            if (product.quantity < product.stock) {
+                product.quantity++;
+                commit(MutationTypes.SET_SHOPPING_CART, cart);
+
+                try {
+                    await DataModel.Utility.increaseQuantity({
+                        index
+                    });
+                } catch (error) {
+                    commit(MutationTypes.CHANGE_ALERT_MESSAGE, {
+                        text: error.message,
+                    });
+                }
+            }
+        },
+        async decreaseQuantity({ commit, state }, index) {
+            const cart = state.shoppingCart.slice();
+            const product = cart[index];
+
+            if (product.quantity > 1) {
+                product.quantity--;
+                commit(MutationTypes.SET_SHOPPING_CART, cart);
+
+                try {
+                    await DataModel.Utility.decreaseQuantity({
+                        index
+                    });
+                } catch (error) {
+                    commit(MutationTypes.CHANGE_ALERT_MESSAGE, {
+                        text: error.message,
+                    });
+                }
+            }
+        },
     },
     getters: {
         userFormTitle: state => {
@@ -125,7 +177,7 @@ const store = new Vuex.Store({
         },
 
         shoppingCartLength: state => state.shoppingCart.length,
-        
+
         canDisplayAlert: state => Boolean(state.alertMessage),
 
         canDisplayConfirm: state => Boolean(state.confirmMessage),
@@ -134,11 +186,11 @@ const store = new Vuex.Store({
 
         isAdmin: state => {
             if (state.user) {
-                return state.user.role === 'admin'
+                return state.user.role === 'admin';
             }
             return false;
         },
-    }
-})
+    },
+});
 
 export default store;

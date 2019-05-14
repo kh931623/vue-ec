@@ -83,7 +83,7 @@ export default {
         async menuClickHandler(item) {
             if (item.isLogout) {
                 try {
-                    const result = await DataModel.Utility.logout();
+                    await DataModel.Utility.logout();
                     this[MutationTypes.SET_USER]({
                         user: null
                     });

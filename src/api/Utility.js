@@ -17,5 +17,11 @@ export default {
     },
     async fetchShoppingCart() {
         return requestHelper(`${END_POINT}/fetch-shopping-cart`);
+    },
+    increaseQuantity(postData) {
+        return requestHelper(`${END_POINT}/increase-quantity`, 'post', postData);
+    },
+    decreaseQuantity(postData) {
+        return requestHelper(`${END_POINT}/decrease-quantity`, 'post', postData);
     }
 }
