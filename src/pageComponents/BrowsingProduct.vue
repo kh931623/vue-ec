@@ -3,7 +3,14 @@
         <!-- search bar -->
         <v-flex xs12>
             <v-form>
-                <v-text-field solo v-model="searchText" label="Search" append-icon="search" clearable></v-text-field>
+                <v-text-field 
+                    solo 
+                    v-model="searchText" 
+                    label="Search" 
+                    append-icon="search"
+                    @click:append="searchProduct()"
+                    clearable
+                ></v-text-field>
             </v-form>
         </v-flex>
 
@@ -152,6 +159,13 @@ export default {
                 if (this.$route.params.category_id) {
                     conditions.category = this.$route.params.category_id;
                 }
+                else {
+                    const { query } = this.$route;
+                    Object.keys(query).reduce((prev, key) => {
+                        prev[key] = query[key];
+                        return prev;
+                    }, conditions);
+                }
 
                 const result = await DataModel.Product.fetchProductList(conditions);
                 this.products = this.addQuantityToArrayObject(result.products);
@@ -181,6 +195,15 @@ export default {
             if (product.quantity > 1) {
                 product.quantity--;
             }
+        },
+        searchProduct() {
+            this.$router.push({
+                path: URL.BROWSING_PRODUCT,
+                query: {
+                    name: this.searchText,
+                    // 'category.name': this.searchText
+                }
+            })
         }
     },
     computed: {

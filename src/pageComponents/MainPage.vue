@@ -8,7 +8,14 @@
     <!-- search bar -->
     <v-flex xs12>
       <v-form>
-        <v-text-field solo v-model="searchText" label="Search" append-icon="search" clearable></v-text-field>
+        <v-text-field  
+          solo 
+          v-model="searchText" 
+          label="Search"
+          append-icon="search"
+          @click:append="searchProduct()"
+          clearable
+        ></v-text-field>
       </v-form>
     </v-flex>
 
@@ -39,6 +46,7 @@
 import { mapMutations } from 'vuex';
 import MutationTypes from '../store/MutationTypes.js';
 import DataModel from '../api';
+import URL from '../router/URL';
 
 export default {
     name: 'MainPage',
@@ -85,6 +93,15 @@ export default {
                 }
             })
         },
+        searchProduct() {
+            this.$router.push({
+                path: URL.BROWSING_PRODUCT,
+                query: {
+                    name: this.searchText,
+                    // 'category.name': this.searchText
+                }
+            })
+        }
     },
 };
 </script>

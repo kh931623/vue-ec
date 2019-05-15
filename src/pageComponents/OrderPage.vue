@@ -42,7 +42,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <span>
-                            Total：{{ order.totalAmount }}
+                            Total：${{ order.totalAmount }}
                         </span>
                     </v-card-actions>
                 </v-card>
